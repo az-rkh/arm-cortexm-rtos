@@ -1,4 +1,5 @@
 #include <stdint.h>
+#include <kernel.h>
 
 #define UART0_DR ((volatile int32_t *) 0x4000C000)
 #define UART0_FR ((volatile uint32_t *) 0x4000C018)
@@ -21,6 +22,22 @@ static void uart_puts(const char *s)
 void systick_handler(void)
 {
     ticks++;
+}
+
+void create_task(TCB *task, void (*entry)(void))
+{
+    /* sp starts at the top of the stack, grows down */
+    task->sp = &task->stack[128 - 16]; /* 16 registers, sp points to the bottom of the saved frame */
+
+    /* hardware exception frame (pushed for exception entry) */
+    task->stack[128 - 1] = 0x01000000; /* xPSR: thumb bit required */
+    task->stack[128 - 2] = (uint32_t) entry; /* Program Counter. start here when task runs */
+    task->stack[128 - 3] = 0xFFFFFFD; /* LR: return to thread mode using PSP */
+    task->stack[128 - 4] = 0;
+    task->stack[128 - 5] = 0;
+    task->stack[128 - 6] = 0;
+    task->stack[128 - 7] = 0;
+    task->stack[128 - 8] = 0;
 }
 
 int main(void)
