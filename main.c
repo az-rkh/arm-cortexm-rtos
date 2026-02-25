@@ -8,6 +8,8 @@
 #define SYSTICK_CURRENT ((volatile uint32_t *) 0xE000E018)
 #define SYSTICK_CALIB ((volatile uint32_t *) 0xE000E01C)
 
+static volatile uint32_t ticks;
+
 static void uart_puts(const char *s)
 {
     while (*s) {
@@ -16,13 +18,16 @@ static void uart_puts(const char *s)
     }
 }
 
-static void systick_handler(void)
+void systick_handler(void)
 {
-
+    ticks++;
 }
 
 int main(void)
 {
     uart_puts("RTOS kernel booted!\n");
+    *SYSTICK_RELOAD = 16000000 / 10 - 1;
+    *SYSTICK_CURRENT = 0;
+    *SYSTICK_CTRL = (1 << 2) | (1 << 1) | (1 << 0);
     while (1);
 }
