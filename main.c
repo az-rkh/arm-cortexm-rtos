@@ -1,5 +1,5 @@
 #include <stdint.h>
-#include <kernel.h>
+#include "kernel.h"
 
 #define UART0_DR ((volatile int32_t *) 0x4000C000)
 #define UART0_FR ((volatile uint32_t *) 0x4000C018)
@@ -22,6 +22,7 @@ static void uart_puts(const char *s)
 void systick_handler(void)
 {
     ticks++;
+    scheduler();
 }
 
 void create_task(TCB *task, void (*entry)(void))
@@ -46,5 +47,10 @@ int main(void)
     *SYSTICK_RELOAD = 16000000 / 10 - 1;
     *SYSTICK_CURRENT = 0;
     *SYSTICK_CTRL = (1 << 2) | (1 << 1) | (1 << 0);
-    while (1);
+    task_count = 3;
+    while (1) {
+        uart_puts("task: ");
+        *UART0_DR = '0' + current_task;
+        *UART0_DR = '\n';
+    };
 }

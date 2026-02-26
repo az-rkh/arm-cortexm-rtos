@@ -1,7 +1,7 @@
 CC = arm-none-eabi-gcc
-CFLAGS = -mcpu=cortex-m3 -mthumb -g -Wall
-LDFLAGS = -nostdlib -T linker.ld
-SRC = startup.c main.c
+CFLAGS = -mcpu=cortex-m3 -mthumb -g -Wall -I -ffreestanding
+LDFLAGS = -nostdlib -T linker.ld -lnosys
+SRC = startup.c main.c kernel.c
 TARGET = kernel.elf
 
 
