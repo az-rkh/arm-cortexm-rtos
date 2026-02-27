@@ -9,6 +9,8 @@
 #define SYSTICK_CURRENT ((volatile uint32_t *) 0xE000E018)
 #define SYSTICK_CALIB ((volatile uint32_t *) 0xE000E01C)
 
+#define ICSR ((volatile uint32_t *) 0xE000ED04)
+
 static volatile uint32_t ticks;
 
 static void uart_puts(const char *s)
@@ -33,7 +35,7 @@ void create_task(TCB *task, void (*entry)(void))
     /* hardware exception frame (pushed for exception entry) */
     task->stack[128 - 1] = 0x01000000; /* xPSR: thumb bit required */
     task->stack[128 - 2] = (uint32_t) entry; /* Program Counter. start here when task runs */
-    task->stack[128 - 3] = 0xFFFFFFD; /* LR: return to thread mode using PSP */
+    task->stack[128 - 3] = 0xFFFFFFFD; /* LR: return to thread mode using PSP */
     task->stack[128 - 4] = 0;
     task->stack[128 - 5] = 0;
     task->stack[128 - 6] = 0;
