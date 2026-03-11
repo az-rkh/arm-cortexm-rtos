@@ -25,6 +25,7 @@ void systick_handler(void)
 {
     ticks++;
     scheduler();
+    *ICSR |= (1 << 28);
 }
 
 void create_task(TCB *task, void (*entry)(void))
@@ -49,7 +50,7 @@ int main(void)
     *SYSTICK_RELOAD = 16000000 / 10 - 1;
     *SYSTICK_CURRENT = 0;
     *SYSTICK_CTRL = (1 << 2) | (1 << 1) | (1 << 0);
-    task_count = 3;
+    create_task(systick_handler(), scheduler());
     while (1) {
         uart_puts("task: ");
         *UART0_DR = '0' + current_task;

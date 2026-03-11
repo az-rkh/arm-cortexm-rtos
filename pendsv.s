@@ -18,7 +18,6 @@ pendsv_handler:
     MOV R3, #516
     MUL R2, R2, R3
     ADD R1, R1, R2
-    ADD R1, R2
     STR R0, [R1]
 
     /* 4. call scheduler() to update current_task */

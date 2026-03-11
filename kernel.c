@@ -9,3 +9,9 @@ void scheduler(void)
 {
     current_task = (current_task + 1) % task_count;
 }
+
+
+void kernel_start(void)
+{
+    
+}
