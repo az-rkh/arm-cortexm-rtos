@@ -44,16 +44,32 @@ void create_task(TCB *task, void (*entry)(void))
     task->stack[128 - 8] = 0;
 }
 
+void task_a(void)
+{
+    while (1) {
+        uart_puts("task A\n");
+    }
+}
+
+void task_b(void)
+{
+    while (1) {
+        uart_puts("task B\n");
+    }
+}
+
 int main(void)
 {
     uart_puts("RTOS kernel booted!\n");
+
+    create_task(&tasks[0], task_a);
+    create_task(&tasks[1], task_b);
+    task_count = 2;
+
     *SYSTICK_RELOAD = 16000000 / 10 - 1;
     *SYSTICK_CURRENT = 0;
     *SYSTICK_CTRL = (1 << 2) | (1 << 1) | (1 << 0);
-    create_task(systick_handler(), scheduler());
-    while (1) {
-        uart_puts("task: ");
-        *UART0_DR = '0' + current_task;
-        *UART0_DR = '\n';
-    };
+
+    kernel_start();
+    while(1);
 }

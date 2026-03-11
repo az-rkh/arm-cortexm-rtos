@@ -9,7 +9,7 @@ typedef struct {
     uint32_t *sp;
     uint32_t stack[128];
 } TCB;
-
+extern TCB tasks[MAX_TASKS];
 void create_task(TCB *task, void (*entry)(void));
 
 void scheduler(void);
