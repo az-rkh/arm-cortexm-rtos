@@ -20,6 +20,10 @@ pendsv_handler:
     ADD R1, R1, R2
     STR R0, [R1]
 
+    PUSH {LR}
+    BL scheduler
+    POP {LR}
+
     /* 4. call scheduler() to update current_task */
     /* already called from SysTick so skip here */
 

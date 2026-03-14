@@ -24,7 +24,6 @@ static void uart_puts(const char *s)
 void systick_handler(void)
 {
     ticks++;
-    scheduler();
     *ICSR |= (1 << 28);
 }
 
