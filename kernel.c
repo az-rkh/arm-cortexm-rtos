@@ -15,7 +15,7 @@ void kernel_start(void)
 {
     *((volatile uint32_t *)0xE000ED20) |= (0xFF << 16);
 
-    current_task = task_count - 1;
+    current_task = MAX_TASKS - 1;
 
     // copy MSP to PSP — valid initial stack, will be discarded
     __asm volatile (
