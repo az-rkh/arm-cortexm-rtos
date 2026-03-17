@@ -4,16 +4,28 @@ TCB tasks[MAX_TASKS];
 int current_task = 0;
 int task_count = 0;
 int kernel_started = 0;
+volatile uint32_t ticks = 0;
 
 void scheduler(void) 
 {
-    current_task = (current_task + 1) % task_count;
+    for (int i = 0; i < task_count; i++) {
+        if (tasks[i].state == TASK_SLEEPING && ticks >= tasks[i].wake_tick){
+            tasks[i].state = TASK_READY;
+        }
+    }
+
+    int next = (current_task + 1) % task_count;
+    while (tasks[next].state != TASK_READY) {
+        next = (next + 1) % task_count;
+    }
+    current_task = next;
 }
 
 void task_sleep(uint32_t ms)
 {
     tasks[current_task].state = TASK_SLEEPING;
-    tasks[current_task].wake_tick;
+    tasks[current_task].wake_tick = ticks + ms;
+    *ICSR |= (1 << 28);
 }
 
 void kernel_start(void)

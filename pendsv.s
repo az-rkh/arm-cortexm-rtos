@@ -15,7 +15,7 @@ pendsv_handler:
     LDR R2, [R2]
 
     /* each TCB is (1 + 128) * 4 = 516 bytes */
-    MOV R3, #516
+    MOV R3, #524
     MUL R2, R2, R3
     ADD R1, R1, R2
     STR R0, [R1]
@@ -32,7 +32,7 @@ pendsv_handler:
     LDR R1, =tasks
     LDR R2, =current_task
     LDR R2, [R2]
-    MOV R3, #516
+    MOV R3, #524
     MUL R2, R2, R3
     ADD R1, R1, R2
     LDR R0, [R1]

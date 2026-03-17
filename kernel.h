@@ -1,8 +1,12 @@
 #include <stdint.h>
 
+#define ICSR ((volatile uint32_t *) 0xE000ED04)
+
 #define MAX_TASKS 3
 #define TASK_READY 0
 #define TASK_SLEEPING 1
+
+extern volatile uint32_t ticks;
 
 extern int current_task;
 extern int task_count;
@@ -14,8 +18,11 @@ typedef struct {
     uint8_t state;
     uint32_t wake_tick;
 } TCB;
+
+
 extern TCB tasks[MAX_TASKS];
 void create_task(TCB *task, void (*entry)(void));
 
 void scheduler(void);
 void kernel_start(void);
+void task_sleep(uint32_t ms);

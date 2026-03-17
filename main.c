@@ -9,9 +9,6 @@
 #define SYSTICK_CURRENT ((volatile uint32_t *) 0xE000E018)
 #define SYSTICK_CALIB ((volatile uint32_t *) 0xE000E01C)
 
-#define ICSR ((volatile uint32_t *) 0xE000ED04)
-
-static volatile uint32_t ticks;
 
 static void uart_puts(const char *s)
 {
@@ -47,6 +44,7 @@ void task_a(void)
 {
     while (1) {
         uart_puts("task A\n");
+        task_sleep(500);
     }
 }
 
@@ -65,7 +63,7 @@ int main(void)
     create_task(&tasks[1], task_b);
     task_count = 2;
 
-    *SYSTICK_RELOAD = 16000000 / 10 - 1;
+    *SYSTICK_RELOAD = 16000000 / 1000 - 1;
     *SYSTICK_CURRENT = 0;
     *SYSTICK_CTRL = (1 << 2) | (1 << 1) | (1 << 0);
 
